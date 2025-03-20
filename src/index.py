@@ -14,9 +14,6 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 driver.get("https://www.kakamuka.com")
 
 main = WebDriverWait(driver, 10)
-main.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="category-lnb"]/div[1]/ul/li[2]/a')))
+main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="category-lnb"]')))
 
-button = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul/li[2]/a')
-sleep(3)
-
-driver.quit()
+target_element = driver.find_element(By.XPATH, '//*[@id="category-lnb"]')
