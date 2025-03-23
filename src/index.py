@@ -49,4 +49,9 @@ category_list = target_element.text.split("\n")
 with open("../dist/category.json", "w", encoding="utf-8") as f:
     json.dump(category_list, f, ensure_ascii=False)
 
+target_ul = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul')
+tul = target_ul.get_attribute("outerHTML")
+with open("../dist/category.html", "w", encoding="utf-8") as f:
+    f.write(tul)
+
 driver.quit()
