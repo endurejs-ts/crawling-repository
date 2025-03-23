@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from time import sleep
 import os
 from dotenv import load_dotenv
+import json
 load_dotenv()
 
 ID = os.getenv("ID")
@@ -44,6 +45,8 @@ sleep(3)
 main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="category-lnb"]')))
 
 target_element = driver.find_element(By.XPATH, '//*[@id="category-lnb"]')
-print(target_element.text)
+category_list = target_element.text.split("\n")
+with open("../dist/category.json", "w", encoding="utf-8") as f:
+    json.dump(category_list, f, ensure_ascii=False)
 
 driver.quit()
