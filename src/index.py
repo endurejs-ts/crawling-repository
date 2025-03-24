@@ -46,12 +46,22 @@ main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="category-lnb"]'))
 
 target_element = driver.find_element(By.XPATH, '//*[@id="category-lnb"]')
 category_list = target_element.text.split("\n")
-with open("../dist/category.json", "w", encoding="utf-8") as f:
-    json.dump(category_list, f, ensure_ascii=False)
 
-target_ul = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul')
-tul = target_ul.get_attribute("outerHTML")
-with open("../dist/category.html", "w", encoding="utf-8") as f:
-    f.write(tul)
+target_elementul = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul')
+all_of_li = target_elementul.find_elements(By.TAG_NAME, "li")
+
+url = []
+for aol in all_of_li:
+    link = aol.find_element(By.TAG_NAME, "a")
+    url.append(link.get_attribute("href"))
+
+for idx, i in enumerate(url, start=1):
+    driver.get(i)
+    main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
+    sleep(1)
+    esangho_crack = driver.find_element(By.XPATH, '//*[@id="contents"]')
+
+    with open(f"../dist/en{idx}.html", "w", encoding="utf-8") as f:
+        f.write(esangho_crack.get_attribute("outerHTML"))
 
 driver.quit()
