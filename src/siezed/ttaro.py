@@ -68,12 +68,23 @@ print(title.text)
 
 content_box = driver.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]')
 body = driver.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody')
-price = driver.find_element(By.XPATH, '//*[@id="product_price"]')
+price = driver.find_element(By.XPATH, '//*[@id="span_product_price_text"]')
 amount_per_box = driver.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[3]/td/span')
 expire_date = driver.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[4]/td/span')
 bacode = driver.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[5]/td/span')
 
 with open("../dist/resulta.json", "r", encoding="utf-8") as f:
     content = json.load(f)
+
+content.append({
+    "title": title.text,
+    "price": price.text,
+    "abpbox": amount_per_box.text,
+    "expire": expire_date.text,
+    "bdc": bacode.text
+})
+
+with open("../dist/resulta.json", "w") as f:
+    json.dump(content, f, ensure_ascii=False, indent=4)
 
 driver.quit()
