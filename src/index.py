@@ -55,13 +55,54 @@ for aol in all_of_li:
     link = aol.find_element(By.TAG_NAME, "a")
     url.append(link.get_attribute("href"))
 
+url.pop(8)
+hrefs = []
 for idx, i in enumerate(url, start=1):
     driver.get(i)
     main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
     sleep(1)
     esangho_crack = driver.find_element(By.XPATH, '//*[@id="contents"]')
 
-    with open(f"../dist/en{idx}.html", "w", encoding="utf-8") as f:
-        f.write(esangho_crack.get_attribute("outerHTML"))
+    ani = esangho_crack.find_element(By.CSS_SELECTOR, 'div.xans-element-.xans-product.xans-product-listrecommend')
+    zinzza = ani.find_element(By.CSS_SELECTOR, 'div > ul')
+    zonna = zinzza.find_element(By.CSS_SELECTOR, 'li > div')
+    ul_all = zonna.find_elements(By.TAG_NAME, "ul")
+    one_li = ul_all[0].find_element(By.TAG_NAME, "li")
+    best_pro = one_li.find_element(By.TAG_NAME, "a")
+
+    href = best_pro.get_attribute("href")
+    hrefs.append(href)
+
+hrefs.pop(8)
+result = []
+for h in hrefs:
+    driver.get(h)
+    main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
+    sleep(1)
+
+    main_content = driver.find_element(By.XPATH, '//*[@id="contents"]')
+    content_box = main_content.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]')
+        
+    title = content_box.find_element(By.TAG_NAME, "h2")
+
+    div_box = content_box.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[2]')
+    table = div_box.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody')
+
+    price = table.find_element(By.XPATH, '//*[@id="span_product_price_text"]')
+    origin_price = table.find_element(By.XPATH, '//*[@id="span_product_price_custom"]')
+    amout_per_box = origin_price.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[4]/td/span')
+    expire_date = table.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[5]/td/span')
+    bacode = table.find_element(By.XPATH, '//*[@id="contents"]/div[2]/div[2]/div[3]/div[2]/div[3]/div[1]/table/tbody/tr[6]/td/span')
+    result.append({
+        "title": title.text,
+        "price": price.text,
+        "origin": origin_price.text,
+        "abpbox": amout_per_box.text,
+        "expire": expire_date.text,
+        "bdc": bacode.text,
+    })
+
+with open("../dist/resulta.json", "w", encoding="utf-8") as f:
+    json.dump(result, f, ensure_ascii=False, indent=4)
 
 driver.quit()
