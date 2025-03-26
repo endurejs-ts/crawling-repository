@@ -49,25 +49,22 @@ category_list = target_element.text.split("\n")
 
 target_elementul = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul')
 all_of_li = target_elementul.find_elements(By.TAG_NAME, "li")
-a = all_of_li[8].find_element(By.TAG_NAME, "a").get_attribute("href")
 
-driver.get(a)
-main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
-sleep(1)
+url = []
+for aol in all_of_li:
+    link = aol.find_element(By.TAG_NAME, "a")
+    url.append(link.get_attribute("href"))
 
-with open("../../dist/datas.json", "r", encoding="utf-8") as f:
-    datas = json.load(f)
+url.pop(8)
+datas = []
+for idx, i in enumerate(url, start=1):
+    driver.get(i)
+    main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
+    sleep(1)
 
-title = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/p') # //*[@id="anchorBoxId_1712"]/a/div/p/text()
-price = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[1]/span[1]') # //*[@id="anchorBoxId_5412"]/a/div/ul/li[1]/span[1]
-bacode = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[2]')
-datas.append({
-    "title": title.text, "origin": "", "price": price.text, "bacode": bacode.text
-})
-
-print(len(datas))
-
-with open("../../dist/datas.json", "w", encoding="utf-8") as f:
-    json.dump(datas, f, ensure_ascii=False, indent=4)
+    # //*[@id="anchorBoxId_10541"]/a/div/p/text()
+    tar = driver.find_elements(By.CSS_SELECTOR, '#contents > div.xans-element-.xans-product.xans-product-listrecommend > div > ul > li > div > ul.grid2')
+    for it in tar:
+        print(it.get_attribute("id"))
 
 driver.quit()

@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from time import sleep
 import os
 from dotenv import load_dotenv
+import urllib.parse
 import json
 load_dotenv()
 
@@ -42,32 +43,12 @@ login_button_form.click()
 
 sleep(3)
 
-main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="category-lnb"]')))
+driver.get("https://www.kakamuka.com/product/list.html?cate_no=122")
 
-target_element = driver.find_element(By.XPATH, '//*[@id="category-lnb"]')
-category_list = target_element.text.split("\n")
+target_a = driver.find_elements(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a')
+hrefs = []
+for ta in target_a:
+    hrefs.append(urllib.parse.unquote(ta.get_attribute("href")))
 
-target_elementul = driver.find_element(By.XPATH, '//*[@id="category-lnb"]/div[1]/ul')
-all_of_li = target_elementul.find_elements(By.TAG_NAME, "li")
-a = all_of_li[8].find_element(By.TAG_NAME, "a").get_attribute("href")
-
-driver.get(a)
-main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
-sleep(1)
-
-with open("../../dist/datas.json", "r", encoding="utf-8") as f:
-    datas = json.load(f)
-
-title = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/p') # //*[@id="anchorBoxId_1712"]/a/div/p/text()
-price = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[1]/span[1]') # //*[@id="anchorBoxId_5412"]/a/div/ul/li[1]/span[1]
-bacode = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[2]')
-datas.append({
-    "title": title.text, "origin": "", "price": price.text, "bacode": bacode.text
-})
-
-print(len(datas))
-
-with open("../../dist/datas.json", "w", encoding="utf-8") as f:
-    json.dump(datas, f, ensure_ascii=False, indent=4)
-
-driver.quit()
+with open("../../dist/href.json", "w", encoding="utf-8") as f:
+    json.dump(hrefs, f, ensure_ascii=False, indent=4)
