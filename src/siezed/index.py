@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from time import sleep
 import os
 from dotenv import load_dotenv
+import urllib.parse
 import json
 load_dotenv()
 
@@ -55,37 +56,17 @@ for aol in all_of_li:
     link = aol.find_element(By.TAG_NAME, "a")
     url.append(link.get_attribute("href"))
 
-url.pop(8)
-url.pop(8+1)
-
 datas = []
-nokia = []
-for idx, i in enumerate(url, start=1):
+for _, i in enumerate(url, start=1):
     driver.get(i)
     main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]')))
-    sleep(1)
+    sleep(1.2)
+    target_a = driver.find_elements(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a')
 
-    title = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/p') # //*[@id="anchorBoxId_1712"]/a/div/p/text()
-    origin = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[1]/span')
-    price = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[2]/span[1]')
-    bacode = driver.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/a/div/ul/li[3]/span') # //*[@id="anchorBoxId_10541"]/a/div/p/text() //*[@id="anchorBoxId_10541"]/a/div/p/span //*[@id="anchorBoxId_10541"]/a/div/p
-    
-    secondary_box_p = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div[3]/div/ul/li/div/ul[2]/li[1]/a/div/p') # /html/body/div[4]/div/div[2]/div[3]/div/ul/li/div/ul[2]/li[1]/a/div/p
-    secondary_box_origin = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div[3]/div/ul/li/div/ul[2]/li[1]/a/div/ul/li[1]/span')
-    secondary_box_price = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div[3]/div/ul/li/div/ul[2]/li[1]/a/div/ul/li[2]/span[1]')
-    secondary_box_bacode = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div[3]/div/ul/li/div/ul[2]/li[1]/a/div/ul/li[3]/span')
+    for ta in target_a:
+        datas.append(urllib.parse.unquote(ta.get_attribute("href")))
 
-    datas.append({
-        "title": title.text, "origin": origin.text, "price": price.text, "bacode": bacode.text
-    })
-
-    nokia.append({
-        "title": secondary_box_p.text, "origin": secondary_box_origin.text, "price": secondary_box_price.text, "bacode": secondary_box_bacode.text
-    })
-
-print(len(datas))
-
-with open("../../dist/nokia.json", "w", encoding="utf-8") as f:
-    json.dump(nokia, f, ensure_ascii=False, indent=4)
+with open("../../dist/href.json", "w", encoding="utf-8") as f:
+    json.dump(datas, f, ensure_ascii=False, indent=4)
 
 driver.quit()
