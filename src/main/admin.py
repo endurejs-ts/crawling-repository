@@ -43,20 +43,4 @@ login_button_form.click()
 
 sleep(3)
 
-driver.get("https://www.kakamuka.com/product/list.html?cate_no=122")
-main.until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents"]/div[5]')))
-sleep(1)
-
-main_c = driver.find_element(By.XPATH, '//*[@id="contents"]/div[5]')
-uls = main_c.find_element(By.XPATH, '//*[@id="contents"]/div[5]/div[2]/ul')
-allOfLis = uls.find_elements(By.TAG_NAME, 'li')
-
-hrefsa = []
-for aol in allOfLis:
-    a = aol.find_element(By.XPATH, '//*[starts-with(@id, "anchorBoxId")]/div[1]/a') # /html/body/div[4]/div/div[2]/div[5]/div[2]/ul/li[2]/div[1]/a
-    hrefsa.append(a.get_attribute("href"))
-
-href_result = [urllib.parse.unquote(h) for h in hrefsa]
-
-with open("../../dist/href2.json", "w", encoding="utf-8") as f:
-    json.dump(href_result, f, ensure_ascii=False)
+driver.quit()
