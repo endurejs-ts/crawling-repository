@@ -10,6 +10,7 @@ bin/
 build/
 develop-eggs/
 dist/
+finished/
 eggs/
 lib/
 lib64/
