@@ -47,5 +47,5 @@ def getLink(end_num: int, cate_num: int, fp: str):
         with open(f"{fp}/bottom/href/href{i}.json", "w", encoding="utf-8") as f:
             json.dump(result_a2, f, ensure_ascii=False)
 
-getLink(17, 88, "../dist/noadmin/88")
+getLink(6, 48, "../dist/noadmin/48")
 driver.quit()
