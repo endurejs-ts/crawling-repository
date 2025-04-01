@@ -44,9 +44,8 @@ login_button_form.click()
 
 sleep(2)
 
-def getOpLink(end_num, fp):
-    for v in range(1, end_num):
-        with open(f"{fp}/href/href{v}.json", "r", encoding="utf-8") as f:
+def getOpLink(fp):
+        with open(f"{fp}/href.json", "r", encoding="utf-8") as f:
             content = json.load(f)
 
         head_result = []
@@ -81,8 +80,8 @@ def getOpLink(end_num, fp):
                 "img3Url": img_link_3
             })
 
-        with open(f"{fp}/data/data{v}.json", "w", encoding="utf-8") as f2:
+        with open(f"{fp}/data.json", "w", encoding="utf-8") as f2:
             json.dump(head_result, f2, ensure_ascii=False, indent=4)
 
-getOpLink(6, "../dist/noadmin/48/bottom")
+getOpLink("../dist/noadmin/44/head")
 driver.quit()
